@@ -396,7 +396,7 @@ class Zend_Feed_Reader
              * @see Zend_Feed_Exception
              */
             require_once 'Zend/Feed/Exception.php';
-            throw new Zend_Feed_Exception("File could not be loaded: $php_errormsg");
+            throw new Zend_Feed_Exception("File could not be loaded: " . (error_get_last()['message'] ?? ''));
         }
         return self::importString($feed);
     }
@@ -468,15 +468,17 @@ class Zend_Feed_Reader
             //libxml_disable_entity_loader($oldValue);
             @ini_restore('track_errors');
             if (!$dom) {
-                if (!isset($php_errormsg)) {
+                if (null === error_get_last()) {
                     if (function_exists('xdebug_is_enabled')) {
-                        $php_errormsg = '(error message not available, when XDebug is running)';
+                        $errormsg = '(error message not available, when XDebug is running)';
                     } else {
-                        $php_errormsg = '(error message not available)';
+                        $errormsg = '(error message not available)';
                     }
+                } else {
+                    $errormsg = error_get_last()['message'] ?? '';
                 }
                 require_once 'Zend/Feed/Exception.php';
-                throw new Zend_Feed_Exception("DOMDocument cannot parse XML: $php_errormsg");
+                throw new Zend_Feed_Exception("DOMDocument cannot parse XML: $errormsg");
             }
         } else {
             require_once 'Zend/Feed/Exception.php';

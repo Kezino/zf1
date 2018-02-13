@@ -831,7 +831,7 @@ class Zend_Gdata_App
         if (!$doc) {
             require_once 'Zend/Gdata/App/Exception.php';
             throw new Zend_Gdata_App_Exception(
-                "DOMDocument cannot parse XML: $php_errormsg");
+                "DOMDocument cannot parse XML: " . (error_get_last()['message'] ?? ''));
         }
 
         $feed = new $className();
@@ -861,7 +861,7 @@ class Zend_Gdata_App
         if ($feed === false) {
             require_once 'Zend/Gdata/App/Exception.php';
             throw new Zend_Gdata_App_Exception(
-                "File could not be loaded: $php_errormsg");
+                "File could not be loaded: " . (error_get_last()['message'] ?? ''));
         }
         return self::importString($feed, $className);
     }

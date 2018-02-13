@@ -265,7 +265,7 @@ class Zend_Feed
              * @see Zend_Feed_Exception
              */
             require_once 'Zend/Feed/Exception.php';
-            throw new Zend_Feed_Exception("File could not be loaded: $php_errormsg");
+            throw new Zend_Feed_Exception("File could not be loaded: " . (error_get_last()['message'] ?? ''));
         }
         return self::importString($feed);
     }
@@ -306,7 +306,7 @@ class Zend_Feed
              * @see Zend_Feed_Exception
              */
             require_once 'Zend/Feed/Exception.php';
-            throw new Zend_Feed_Exception("Internal error: $php_errormsg");
+            throw new Zend_Feed_Exception("Internal error: " . (error_get_last()['message'] ?? ''));
         }
 
         // Try to fetch a feed for each link tag that appears to refer to a feed

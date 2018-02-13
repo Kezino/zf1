@@ -118,19 +118,21 @@ abstract class Zend_Feed_Abstract extends Zend_Feed_Element implements Iterator,
 
         if (!$doc) {
             // prevent the class to generate an undefined variable notice (ZF-2590)
-            if (!isset($php_errormsg)) {
+            if (null === error_get_last()) {
                 if (function_exists('xdebug_is_enabled')) {
-                    $php_errormsg = '(error message not available, when XDebug is running)';
+                    $errormsg = '(error message not available, when XDebug is running)';
                 } else {
-                    $php_errormsg = '(error message not available)';
+                    $errormsg = '(error message not available)';
                 }
+            } else {
+                $errormsg = error_get_last()['message'] ?? '';
             }
 
             /**
              * @see Zend_Feed_Exception
              */
             require_once 'Zend/Feed/Exception.php';
-            throw new Zend_Feed_Exception("DOMDocument cannot parse XML: $php_errormsg");
+            throw new Zend_Feed_Exception("DOMDocument cannot parse XML: $errormsg");
         }
 
         $this->_element = $doc;
